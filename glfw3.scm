@@ -1,6 +1,7 @@
 (foreign-declare "#include <glfw/glfw3.h>") 
 
-(begin
+(module glfw3 *
+  (import chicken scheme foreign)
   (define-constant GLFW_VERSION_MAJOR 3)
   (define-constant GLFW_VERSION_MINOR 0)
   (define-constant GLFW_VERSION_REVISION 4)
@@ -232,31 +233,37 @@
       integer
       (((c-pointer (struct "GLFWvidmode")) s))
       "return(s->width);"))
+
   (define GLFWvidmode-height
     (foreign-lambda*
       integer
       (((c-pointer (struct "GLFWvidmode")) s))
       "return(s->height);"))
+
   (define GLFWvidmode-redBits
     (foreign-lambda*
       integer
       (((c-pointer (struct "GLFWvidmode")) s))
       "return(s->redBits);"))
+
   (define GLFWvidmode-greenBits
     (foreign-lambda*
       integer
       (((c-pointer (struct "GLFWvidmode")) s))
       "return(s->greenBits);"))
+
   (define GLFWvidmode-blueBits
     (foreign-lambda*
       integer
       (((c-pointer (struct "GLFWvidmode")) s))
       "return(s->blueBits);"))
+
   (define GLFWvidmode-refreshRate
     (foreign-lambda*
       integer
       (((c-pointer (struct "GLFWvidmode")) s))
       "return(s->refreshRate);"))
+
   (define make-GLFWvidmode
     (foreign-lambda*
       (c-pointer (struct "GLFWvidmode"))
@@ -267,26 +274,31 @@
        (integer blueBits)
        (integer refreshRate))
       "struct GLFWvidmode *tmp_ =  (struct GLFWvidmode *)C_malloc(sizeof(struct GLFWvidmode));\ntmp_->width = width;\ntmp_->height = height;\ntmp_->redBits = redBits;\ntmp_->greenBits = greenBits;\ntmp_->blueBits = blueBits;\ntmp_->refreshRate = refreshRate;\nreturn(tmp_);;\n"))
+
   (define GLFWgammaramp-red
     (foreign-lambda*
       (c-pointer unsigned-short)
       (((c-pointer (struct "GLFWgammaramp")) s))
       "return(s->red);"))
+
   (define GLFWgammaramp-green
     (foreign-lambda*
       (c-pointer unsigned-short)
       (((c-pointer (struct "GLFWgammaramp")) s))
       "return(s->green);"))
+
   (define GLFWgammaramp-blue
     (foreign-lambda*
       (c-pointer unsigned-short)
       (((c-pointer (struct "GLFWgammaramp")) s))
       "return(s->blue);"))
+
   (define GLFWgammaramp-size
     (foreign-lambda*
       unsigned-integer
       (((c-pointer (struct "GLFWgammaramp")) s))
       "return(s->size);"))
+
   (define make-GLFWgammaramp
     (foreign-lambda*
       (c-pointer (struct "GLFWgammaramp"))
@@ -295,433 +307,435 @@
        ((c-pointer unsigned-short) blue)
        (unsigned-integer size))
       "struct GLFWgammaramp *tmp_ =  (struct GLFWgammaramp *)C_malloc(sizeof(struct GLFWgammaramp));\ntmp_->red = red;\ntmp_->green = green;\ntmp_->blue = blue;\ntmp_->size = size;\nreturn(tmp_);;\n"))
-  (begin (define glfwInit (foreign-lambda* integer () "return(glfwInit());")))
-  (begin (define glfwTerminate (foreign-lambda* void () "glfwTerminate();")))
-  (begin
-    (define glfwGetVersion
-      (foreign-lambda*
+
+  (define glfwInit (foreign-lambda* integer () "return(glfwInit());"))
+
+  (define glfwTerminate (foreign-lambda* void () "glfwTerminate();"))
+
+  (define glfwGetVersion
+    (foreign-lambda*
+      void
+      ((s32vector a0) (s32vector a1) (s32vector a2))
+      "glfwGetVersion(a0 , a1 , a2);"))
+
+  (define glfwGetVersionString
+    (foreign-lambda* c-string () "return(glfwGetVersionString());"))
+
+  (define glfwSetErrorCallback
+    (foreign-lambda*
+      (function void (integer c-string))
+      (((function void (integer c-string)) a0))
+      "return(glfwSetErrorCallback((GLFWerrorfun)a0));"))
+
+  (define glfwGetMonitors
+    (foreign-lambda*
+      (c-pointer (c-pointer (struct "GLFWmonitor")))
+      ((s32vector a0))
+      "return(glfwGetMonitors(a0));"))
+
+  (define glfwGetPrimaryMonitor
+    (foreign-lambda*
+      (c-pointer (struct "GLFWmonitor"))
+      ()
+      "return(glfwGetPrimaryMonitor());"))
+
+  (define glfwGetMonitorPos
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWmonitor")) a0) (s32vector a1) (s32vector a2))
+      "glfwGetMonitorPos(a0 , a1 , a2);"))
+
+  (define glfwGetMonitorPhysicalSize
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWmonitor")) a0) (s32vector a1) (s32vector a2))
+      "glfwGetMonitorPhysicalSize(a0 , a1 , a2);"))
+
+  (define glfwGetMonitorName
+    (foreign-lambda*
+      c-string
+      (((c-pointer (struct "GLFWmonitor")) a0))
+      "return(glfwGetMonitorName(a0));"))
+
+  (define glfwSetMonitorCallback
+    (foreign-lambda*
+      (function void ((c-pointer (struct "GLFWmonitor")) integer))
+      (((function void ((c-pointer (struct "GLFWmonitor")) integer)) a0))
+      "return(glfwSetMonitorCallback(a0));"))
+
+  (define glfwGetVideoModes
+    (foreign-lambda*
+      (c-pointer (const (struct "GLFWvidmode")))
+      (((c-pointer (struct "GLFWmonitor")) a0) (s32vector a1))
+      "return(glfwGetVideoModes(a0 , a1));"))
+
+  (define glfwGetVideoMode
+    (foreign-lambda*
+      (c-pointer (const (struct "GLFWvidmode")))
+      (((c-pointer (struct "GLFWmonitor")) a0))
+      "return(glfwGetVideoMode(a0));"))
+
+  (define glfwSetGamma
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWmonitor")) a0) (float a1))
+      "glfwSetGamma(a0 , a1);"))
+
+  (define glfwGetGammaRamp
+    (foreign-lambda*
+      (c-pointer (const (struct "GLFWgammaramp")))
+      (((c-pointer (struct "GLFWmonitor")) a0))
+      "return(glfwGetGammaRamp(a0));"))
+
+  (define glfwSetGammaRamp
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWmonitor")) a0)
+       ((c-pointer (struct "GLFWgammaramp")) a1))
+      "glfwSetGammaRamp(a0 , a1);"))
+
+  (define glfwDefaultWindowHints
+    (foreign-lambda* void () "glfwDefaultWindowHints();"))
+
+  (define glfwWindowHint
+    (foreign-lambda*
+      void
+      ((integer a0) (integer a1))
+      "glfwWindowHint(a0 , a1);"))
+
+  (define glfwCreateWindow
+    (foreign-lambda*
+      (c-pointer (struct "GLFWwindow"))
+      ((integer a0)
+       (integer a1)
+       (c-string a2)
+       ((c-pointer (struct "GLFWmonitor")) a3)
+       ((c-pointer (struct "GLFWwindow")) a4))
+      "return(glfwCreateWindow(a0 , a1 , a2 , a3 , a4));"))
+
+  (define glfwDestroyWindow
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0))
+      "glfwDestroyWindow(a0);"))
+
+  (define glfwWindowShouldClose
+    (foreign-lambda*
+      integer
+      (((c-pointer (struct "GLFWwindow")) a0))
+      "return(glfwWindowShouldClose(a0));"))
+
+  (define glfwSetWindowShouldClose
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0) (integer a1))
+      "glfwSetWindowShouldClose(a0 , a1);"))
+
+  (define glfwSetWindowTitle
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0) (c-string a1))
+      "glfwSetWindowTitle(a0 , a1);"))
+
+  (define glfwGetWindowPos
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0) (s32vector a1) (s32vector a2))
+      "glfwGetWindowPos(a0 , a1 , a2);"))
+
+  (define glfwSetWindowPos
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0) (integer a1) (integer a2))
+      "glfwSetWindowPos(a0 , a1 , a2);"))
+
+  (define glfwGetWindowSize
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0) (s32vector a1) (s32vector a2))
+      "glfwGetWindowSize(a0 , a1 , a2);"))
+
+  (define glfwSetWindowSize
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0) (integer a1) (integer a2))
+      "glfwSetWindowSize(a0 , a1 , a2);"))
+
+  (define glfwGetFramebufferSize
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0) (s32vector a1) (s32vector a2))
+      "glfwGetFramebufferSize(a0 , a1 , a2);"))
+
+  (define glfwIconifyWindow
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0))
+      "glfwIconifyWindow(a0);"))
+
+  (define glfwRestoreWindow
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0))
+      "glfwRestoreWindow(a0);"))
+
+  (define glfwShowWindow
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0))
+      "glfwShowWindow(a0);"))
+
+  (define glfwHideWindow
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0))
+      "glfwHideWindow(a0);"))
+
+  (define glfwGetWindowMonitor
+    (foreign-lambda*
+      (c-pointer (struct "GLFWmonitor"))
+      (((c-pointer (struct "GLFWwindow")) a0))
+      "return(glfwGetWindowMonitor(a0));"))
+
+  (define glfwGetWindowAttrib
+    (foreign-lambda*
+      integer
+      (((c-pointer (struct "GLFWwindow")) a0) (integer a1))
+      "return(glfwGetWindowAttrib(a0 , a1));"))
+
+  (define glfwSetWindowUserPointer
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0) ((c-pointer void) a1))
+      "glfwSetWindowUserPointer(a0 , a1);"))
+
+  (define glfwGetWindowUserPointer
+    (foreign-lambda*
+      (c-pointer void)
+      (((c-pointer (struct "GLFWwindow")) a0))
+      "return(glfwGetWindowUserPointer(a0));"))
+
+  (define glfwSetWindowPosCallback
+    (foreign-lambda*
+      (function void ((c-pointer (struct "GLFWwindow")) integer integer))
+      (((c-pointer (struct "GLFWwindow")) a0)
+       ((function void ((c-pointer (struct "GLFWwindow")) integer integer))
+        a1))
+      "return(glfwSetWindowPosCallback(a0 , a1));"))
+
+  (define glfwSetWindowSizeCallback
+    (foreign-lambda*
+      (function void ((c-pointer (struct "GLFWwindow")) integer integer))
+      (((c-pointer (struct "GLFWwindow")) a0)
+       ((function void ((c-pointer (struct "GLFWwindow")) integer integer))
+        a1))
+      "return(glfwSetWindowSizeCallback(a0 , a1));"))
+
+  (define glfwSetWindowCloseCallback
+    (foreign-lambda*
+      (function void ((c-pointer (struct "GLFWwindow"))))
+      (((c-pointer (struct "GLFWwindow")) a0)
+       ((function void ((c-pointer (struct "GLFWwindow")))) a1))
+      "return(glfwSetWindowCloseCallback(a0 , a1));"))
+
+  (define glfwSetWindowRefreshCallback
+    (foreign-lambda*
+      (function void ((c-pointer (struct "GLFWwindow"))))
+      (((c-pointer (struct "GLFWwindow")) a0)
+       ((function void ((c-pointer (struct "GLFWwindow")))) a1))
+      "return(glfwSetWindowRefreshCallback(a0 , a1));"))
+
+  (define glfwSetWindowFocusCallback
+    (foreign-lambda*
+      (function void ((c-pointer (struct "GLFWwindow")) integer))
+      (((c-pointer (struct "GLFWwindow")) a0)
+       ((function void ((c-pointer (struct "GLFWwindow")) integer)) a1))
+      "return(glfwSetWindowFocusCallback(a0 , a1));"))
+
+  (define glfwSetWindowIconifyCallback
+    (foreign-lambda*
+      (function void ((c-pointer (struct "GLFWwindow")) integer))
+      (((c-pointer (struct "GLFWwindow")) a0)
+       ((function void ((c-pointer (struct "GLFWwindow")) integer)) a1))
+      "return(glfwSetWindowIconifyCallback(a0 , a1));"))
+
+  (define glfwSetFramebufferSizeCallback
+    (foreign-lambda*
+      (function void ((c-pointer (struct "GLFWwindow")) integer integer))
+      (((c-pointer (struct "GLFWwindow")) a0)
+       ((function void ((c-pointer (struct "GLFWwindow")) integer integer))
+        a1))
+      "return(glfwSetFramebufferSizeCallback(a0 , a1));"))
+
+  (define glfwPollEvents (foreign-lambda* void () "glfwPollEvents();"))
+
+  (define glfwWaitEvents (foreign-lambda* void () "glfwWaitEvents();"))
+
+  (define glfwGetInputMode
+    (foreign-lambda*
+      integer
+      (((c-pointer (struct "GLFWwindow")) a0) (integer a1))
+      "return(glfwGetInputMode(a0 , a1));"))
+
+  (define glfwSetInputMode
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0) (integer a1) (integer a2))
+      "glfwSetInputMode(a0 , a1 , a2);"))
+
+  (define glfwGetKey
+    (foreign-lambda*
+      integer
+      (((c-pointer (struct "GLFWwindow")) a0) (integer a1))
+      "return(glfwGetKey(a0 , a1));"))
+
+  (define glfwGetMouseButton
+    (foreign-lambda*
+      integer
+      (((c-pointer (struct "GLFWwindow")) a0) (integer a1))
+      "return(glfwGetMouseButton(a0 , a1));"))
+
+  (define glfwGetCursorPos
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0) (f64vector a1) (f64vector a2))
+      "glfwGetCursorPos(a0 , a1 , a2);"))
+
+  (define glfwSetCursorPos
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0) (double a1) (double a2))
+      "glfwSetCursorPos(a0 , a1 , a2);"))
+
+  (define glfwSetKeyCallback
+    (foreign-lambda*
+      (function
         void
-        ((s32vector a0) (s32vector a1) (s32vector a2))
-        "glfwGetVersion(a0 , a1 , a2);")))
-  (begin
-    (define glfwGetVersionString
-      (foreign-lambda* c-string () "return(glfwGetVersionString());")))
-  (begin
-    (define glfwSetErrorCallback
-      (foreign-lambda*
-        (function void (integer c-string))
-        (((function void (integer c-string)) a0))
-        "return(glfwSetErrorCallback(a0));")))
-  (begin
-    (define glfwGetMonitors
-      (foreign-lambda*
-        (c-pointer (c-pointer (struct "GLFWmonitor")))
-        ((s32vector a0))
-        "return(glfwGetMonitors(a0));")))
-  (begin
-    (define glfwGetPrimaryMonitor
-      (foreign-lambda*
-        (c-pointer (struct "GLFWmonitor"))
-        ()
-        "return(glfwGetPrimaryMonitor());")))
-  (begin
-    (define glfwGetMonitorPos
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWmonitor")) a0) (s32vector a1) (s32vector a2))
-        "glfwGetMonitorPos(a0 , a1 , a2);")))
-  (begin
-    (define glfwGetMonitorPhysicalSize
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWmonitor")) a0) (s32vector a1) (s32vector a2))
-        "glfwGetMonitorPhysicalSize(a0 , a1 , a2);")))
-  (begin
-    (define glfwGetMonitorName
-      (foreign-lambda*
-        c-string
-        (((c-pointer (struct "GLFWmonitor")) a0))
-        "return(glfwGetMonitorName(a0));")))
-  (begin
-    (define glfwSetMonitorCallback
-      (foreign-lambda*
-        (function void ((c-pointer (struct "GLFWmonitor")) integer))
-        (((function void ((c-pointer (struct "GLFWmonitor")) integer)) a0))
-        "return(glfwSetMonitorCallback(a0));")))
-  (begin
-    (define glfwGetVideoModes
-      (foreign-lambda*
-        (c-pointer (const (struct "GLFWvidmode")))
-        (((c-pointer (struct "GLFWmonitor")) a0) (s32vector a1))
-        "return(glfwGetVideoModes(a0 , a1));")))
-  (begin
-    (define glfwGetVideoMode
-      (foreign-lambda*
-        (c-pointer (const (struct "GLFWvidmode")))
-        (((c-pointer (struct "GLFWmonitor")) a0))
-        "return(glfwGetVideoMode(a0));")))
-  (begin
-    (define glfwSetGamma
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWmonitor")) a0) (float a1))
-        "glfwSetGamma(a0 , a1);")))
-  (begin
-    (define glfwGetGammaRamp
-      (foreign-lambda*
-        (c-pointer (const (struct "GLFWgammaramp")))
-        (((c-pointer (struct "GLFWmonitor")) a0))
-        "return(glfwGetGammaRamp(a0));")))
-  (begin
-    (define glfwSetGammaRamp
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWmonitor")) a0)
-         ((c-pointer (struct "GLFWgammaramp")) a1))
-        "glfwSetGammaRamp(a0 , a1);")))
-  (begin
-    (define glfwDefaultWindowHints
-      (foreign-lambda* void () "glfwDefaultWindowHints();")))
-  (begin
-    (define glfwWindowHint
-      (foreign-lambda*
-        void
-        ((integer a0) (integer a1))
-        "glfwWindowHint(a0 , a1);")))
-  (begin
-    (define glfwCreateWindow
-      (foreign-lambda*
-        (c-pointer (struct "GLFWwindow"))
-        ((integer a0)
-         (integer a1)
-         (c-string a2)
-         ((c-pointer (struct "GLFWmonitor")) a3)
-         ((c-pointer (struct "GLFWwindow")) a4))
-        "return(glfwCreateWindow(a0 , a1 , a2 , a3 , a4));")))
-  (begin
-    (define glfwDestroyWindow
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0))
-        "glfwDestroyWindow(a0);")))
-  (begin
-    (define glfwWindowShouldClose
-      (foreign-lambda*
-        integer
-        (((c-pointer (struct "GLFWwindow")) a0))
-        "return(glfwWindowShouldClose(a0));")))
-  (begin
-    (define glfwSetWindowShouldClose
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0) (integer a1))
-        "glfwSetWindowShouldClose(a0 , a1);")))
-  (begin
-    (define glfwSetWindowTitle
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0) (c-string a1))
-        "glfwSetWindowTitle(a0 , a1);")))
-  (begin
-    (define glfwGetWindowPos
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0) (s32vector a1) (s32vector a2))
-        "glfwGetWindowPos(a0 , a1 , a2);")))
-  (begin
-    (define glfwSetWindowPos
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0) (integer a1) (integer a2))
-        "glfwSetWindowPos(a0 , a1 , a2);")))
-  (begin
-    (define glfwGetWindowSize
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0) (s32vector a1) (s32vector a2))
-        "glfwGetWindowSize(a0 , a1 , a2);")))
-  (begin
-    (define glfwSetWindowSize
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0) (integer a1) (integer a2))
-        "glfwSetWindowSize(a0 , a1 , a2);")))
-  (begin
-    (define glfwGetFramebufferSize
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0) (s32vector a1) (s32vector a2))
-        "glfwGetFramebufferSize(a0 , a1 , a2);")))
-  (begin
-    (define glfwIconifyWindow
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0))
-        "glfwIconifyWindow(a0);")))
-  (begin
-    (define glfwRestoreWindow
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0))
-        "glfwRestoreWindow(a0);")))
-  (begin
-    (define glfwShowWindow
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0))
-        "glfwShowWindow(a0);")))
-  (begin
-    (define glfwHideWindow
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0))
-        "glfwHideWindow(a0);")))
-  (begin
-    (define glfwGetWindowMonitor
-      (foreign-lambda*
-        (c-pointer (struct "GLFWmonitor"))
-        (((c-pointer (struct "GLFWwindow")) a0))
-        "return(glfwGetWindowMonitor(a0));")))
-  (begin
-    (define glfwGetWindowAttrib
-      (foreign-lambda*
-        integer
-        (((c-pointer (struct "GLFWwindow")) a0) (integer a1))
-        "return(glfwGetWindowAttrib(a0 , a1));")))
-  (begin
-    (define glfwSetWindowUserPointer
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0) ((c-pointer void) a1))
-        "glfwSetWindowUserPointer(a0 , a1);")))
-  (begin
-    (define glfwGetWindowUserPointer
-      (foreign-lambda*
-        (c-pointer void)
-        (((c-pointer (struct "GLFWwindow")) a0))
-        "return(glfwGetWindowUserPointer(a0));")))
-  (begin
-    (define glfwSetWindowPosCallback
-      (foreign-lambda*
-        (function void ((c-pointer (struct "GLFWwindow")) integer integer))
-        (((c-pointer (struct "GLFWwindow")) a0)
-         ((function void ((c-pointer (struct "GLFWwindow")) integer integer))
-          a1))
-        "return(glfwSetWindowPosCallback(a0 , a1));")))
-  (begin
-    (define glfwSetWindowSizeCallback
-      (foreign-lambda*
-        (function void ((c-pointer (struct "GLFWwindow")) integer integer))
-        (((c-pointer (struct "GLFWwindow")) a0)
-         ((function void ((c-pointer (struct "GLFWwindow")) integer integer))
-          a1))
-        "return(glfwSetWindowSizeCallback(a0 , a1));")))
-  (begin
-    (define glfwSetWindowCloseCallback
-      (foreign-lambda*
-        (function void ((c-pointer (struct "GLFWwindow"))))
-        (((c-pointer (struct "GLFWwindow")) a0)
-         ((function void ((c-pointer (struct "GLFWwindow")))) a1))
-        "return(glfwSetWindowCloseCallback(a0 , a1));")))
-  (begin
-    (define glfwSetWindowRefreshCallback
-      (foreign-lambda*
-        (function void ((c-pointer (struct "GLFWwindow"))))
-        (((c-pointer (struct "GLFWwindow")) a0)
-         ((function void ((c-pointer (struct "GLFWwindow")))) a1))
-        "return(glfwSetWindowRefreshCallback(a0 , a1));")))
-  (begin
-    (define glfwSetWindowFocusCallback
-      (foreign-lambda*
-        (function void ((c-pointer (struct "GLFWwindow")) integer))
-        (((c-pointer (struct "GLFWwindow")) a0)
-         ((function void ((c-pointer (struct "GLFWwindow")) integer)) a1))
-        "return(glfwSetWindowFocusCallback(a0 , a1));")))
-  (begin
-    (define glfwSetWindowIconifyCallback
-      (foreign-lambda*
-        (function void ((c-pointer (struct "GLFWwindow")) integer))
-        (((c-pointer (struct "GLFWwindow")) a0)
-         ((function void ((c-pointer (struct "GLFWwindow")) integer)) a1))
-        "return(glfwSetWindowIconifyCallback(a0 , a1));")))
-  (begin
-    (define glfwSetFramebufferSizeCallback
-      (foreign-lambda*
-        (function void ((c-pointer (struct "GLFWwindow")) integer integer))
-        (((c-pointer (struct "GLFWwindow")) a0)
-         ((function void ((c-pointer (struct "GLFWwindow")) integer integer))
-          a1))
-        "return(glfwSetFramebufferSizeCallback(a0 , a1));")))
-  (begin (define glfwPollEvents (foreign-lambda* void () "glfwPollEvents();")))
-  (begin (define glfwWaitEvents (foreign-lambda* void () "glfwWaitEvents();")))
-  (begin
-    (define glfwGetInputMode
-      (foreign-lambda*
-        integer
-        (((c-pointer (struct "GLFWwindow")) a0) (integer a1))
-        "return(glfwGetInputMode(a0 , a1));")))
-  (begin
-    (define glfwSetInputMode
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0) (integer a1) (integer a2))
-        "glfwSetInputMode(a0 , a1 , a2);")))
-  (begin
-    (define glfwGetKey
-      (foreign-lambda*
-        integer
-        (((c-pointer (struct "GLFWwindow")) a0) (integer a1))
-        "return(glfwGetKey(a0 , a1));")))
-  (begin
-    (define glfwGetMouseButton
-      (foreign-lambda*
-        integer
-        (((c-pointer (struct "GLFWwindow")) a0) (integer a1))
-        "return(glfwGetMouseButton(a0 , a1));")))
-  (begin
-    (define glfwGetCursorPos
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0) (f64vector a1) (f64vector a2))
-        "glfwGetCursorPos(a0 , a1 , a2);")))
-  (begin
-    (define glfwSetCursorPos
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0) (double a1) (double a2))
-        "glfwSetCursorPos(a0 , a1 , a2);")))
-  (begin
-    (define glfwSetKeyCallback
-      (foreign-lambda*
-        (function
+        ((c-pointer (struct "GLFWwindow")) integer integer integer integer))
+      (((c-pointer (struct "GLFWwindow")) a0)
+       ((function
           void
-          ((c-pointer (struct "GLFWwindow")) integer integer integer integer))
-        (((c-pointer (struct "GLFWwindow")) a0)
-         ((function
-            void
-            ((c-pointer (struct "GLFWwindow"))
-             integer
-             integer
-             integer
-             integer))
-          a1))
-        "return(glfwSetKeyCallback(a0 , a1));")))
-  (begin
-    (define glfwSetCharCallback
-      (foreign-lambda*
-        (function void ((c-pointer (struct "GLFWwindow")) unsigned-integer))
-        (((c-pointer (struct "GLFWwindow")) a0)
-         ((function void ((c-pointer (struct "GLFWwindow")) unsigned-integer))
-          a1))
-        "return(glfwSetCharCallback(a0 , a1));")))
-  (begin
-    (define glfwSetMouseButtonCallback
-      (foreign-lambda*
-        (function
+          ((c-pointer (struct "GLFWwindow"))
+           integer
+           integer
+           integer
+           integer))
+        a1))
+      "return(glfwSetKeyCallback(a0 , a1));"))
+
+  (define glfwSetCharCallback
+    (foreign-lambda*
+      (function void ((c-pointer (struct "GLFWwindow")) unsigned-integer))
+      (((c-pointer (struct "GLFWwindow")) a0)
+       ((function void ((c-pointer (struct "GLFWwindow")) unsigned-integer))
+        a1))
+      "return(glfwSetCharCallback(a0 , a1));"))
+
+  (define glfwSetMouseButtonCallback
+    (foreign-lambda*
+      (function
+        void
+        ((c-pointer (struct "GLFWwindow")) integer integer integer))
+      (((c-pointer (struct "GLFWwindow")) a0)
+       ((function
           void
           ((c-pointer (struct "GLFWwindow")) integer integer integer))
-        (((c-pointer (struct "GLFWwindow")) a0)
-         ((function
-            void
-            ((c-pointer (struct "GLFWwindow")) integer integer integer))
-          a1))
-        "return(glfwSetMouseButtonCallback(a0 , a1));")))
-  (begin
-    (define glfwSetCursorPosCallback
-      (foreign-lambda*
-        (function void ((c-pointer (struct "GLFWwindow")) double double))
-        (((c-pointer (struct "GLFWwindow")) a0)
-         ((function void ((c-pointer (struct "GLFWwindow")) double double))
-          a1))
-        "return(glfwSetCursorPosCallback(a0 , a1));")))
-  (begin
-    (define glfwSetCursorEnterCallback
-      (foreign-lambda*
-        (function void ((c-pointer (struct "GLFWwindow")) integer))
-        (((c-pointer (struct "GLFWwindow")) a0)
-         ((function void ((c-pointer (struct "GLFWwindow")) integer)) a1))
-        "return(glfwSetCursorEnterCallback(a0 , a1));")))
-  (begin
-    (define glfwSetScrollCallback
-      (foreign-lambda*
-        (function void ((c-pointer (struct "GLFWwindow")) double double))
-        (((c-pointer (struct "GLFWwindow")) a0)
-         ((function void ((c-pointer (struct "GLFWwindow")) double double))
-          a1))
-        "return(glfwSetScrollCallback(a0 , a1));")))
-  (begin
-    (define glfwJoystickPresent
-      (foreign-lambda*
-        integer
-        ((integer a0))
-        "return(glfwJoystickPresent(a0));")))
-  (begin
-    (define glfwGetJoystickAxes
-      (foreign-lambda*
-        (c-pointer (const float))
-        ((integer a0) (s32vector a1))
-        "return(glfwGetJoystickAxes(a0 , a1));")))
-  (begin
-    (define glfwGetJoystickButtons
-      (foreign-lambda*
-        (c-pointer (const unsigned-char))
-        ((integer a0) (s32vector a1))
-        "return(glfwGetJoystickButtons(a0 , a1));")))
-  (begin
-    (define glfwGetJoystickName
-      (foreign-lambda*
-        c-string
-        ((integer a0))
-        "return(glfwGetJoystickName(a0));")))
-  (begin
-    (define glfwSetClipboardString
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0) (c-string a1))
-        "glfwSetClipboardString(a0 , a1);")))
-  (begin
-    (define glfwGetClipboardString
-      (foreign-lambda*
-        c-string
-        (((c-pointer (struct "GLFWwindow")) a0))
-        "return(glfwGetClipboardString(a0));")))
-  (begin
-    (define glfwGetTime (foreign-lambda* double () "return(glfwGetTime());")))
-  (begin
-    (define glfwSetTime
-      (foreign-lambda* void ((double a0)) "glfwSetTime(a0);")))
-  (begin
-    (define glfwMakeContextCurrent
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0))
-        "glfwMakeContextCurrent(a0);")))
-  (begin
-    (define glfwGetCurrentContext
-      (foreign-lambda*
-        (c-pointer (struct "GLFWwindow"))
-        ()
-        "return(glfwGetCurrentContext());")))
-  (begin
-    (define glfwSwapBuffers
-      (foreign-lambda*
-        void
-        (((c-pointer (struct "GLFWwindow")) a0))
-        "glfwSwapBuffers(a0);")))
-  (begin
-    (define glfwSwapInterval
-      (foreign-lambda* void ((integer a0)) "glfwSwapInterval(a0);")))
-  (begin
-    (define glfwExtensionSupported
-      (foreign-lambda*
-        integer
-        ((c-string a0))
-        "return(glfwExtensionSupported(a0));")))
-  (begin
-    (define glfwGetProcAddress
-      (foreign-lambda*
-        (function void (void))
-        ((c-string a0))
-        "return(glfwGetProcAddress(a0));"))))
+        a1))
+      "return(glfwSetMouseButtonCallback(a0 , a1));"))
 
-;;; END OF FILE
+  (define glfwSetCursorPosCallback
+    (foreign-lambda*
+      (function void ((c-pointer (struct "GLFWwindow")) double double))
+      (((c-pointer (struct "GLFWwindow")) a0)
+       ((function void ((c-pointer (struct "GLFWwindow")) double double))
+        a1))
+      "return(glfwSetCursorPosCallback(a0 , a1));"))
+
+  (define glfwSetCursorEnterCallback
+    (foreign-lambda*
+      (function void ((c-pointer (struct "GLFWwindow")) integer))
+      (((c-pointer (struct "GLFWwindow")) a0)
+       ((function void ((c-pointer (struct "GLFWwindow")) integer)) a1))
+      "return(glfwSetCursorEnterCallback(a0 , a1));"))
+
+  (define glfwSetScrollCallback
+    (foreign-lambda*
+      (function void ((c-pointer (struct "GLFWwindow")) double double))
+      (((c-pointer (struct "GLFWwindow")) a0)
+       ((function void ((c-pointer (struct "GLFWwindow")) double double))
+        a1))
+      "return(glfwSetScrollCallback(a0 , a1));"))
+
+  (define glfwJoystickPresent
+    (foreign-lambda*
+      integer
+      ((integer a0))
+      "return(glfwJoystickPresent(a0));"))
+
+  (define glfwGetJoystickAxes
+    (foreign-lambda*
+      (c-pointer (const float))
+      ((integer a0) (s32vector a1))
+      "return(glfwGetJoystickAxes(a0 , a1));"))
+
+  (define glfwGetJoystickButtons
+    (foreign-lambda*
+      (c-pointer (const unsigned-char))
+      ((integer a0) (s32vector a1))
+      "return(glfwGetJoystickButtons(a0 , a1));"))
+
+  (define glfwGetJoystickName
+    (foreign-lambda*
+      c-string
+      ((integer a0))
+      "return(glfwGetJoystickName(a0));"))
+
+  (define glfwSetClipboardString
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0) (c-string a1))
+      "glfwSetClipboardString(a0 , a1);"))
+
+  (define glfwGetClipboardString
+    (foreign-lambda*
+      c-string
+      (((c-pointer (struct "GLFWwindow")) a0))
+      "return(glfwGetClipboardString(a0));"))
+
+  (define glfwGetTime (foreign-lambda* double () "return(glfwGetTime());"))
+
+  (define glfwSetTime
+    (foreign-lambda* void ((double a0)) "glfwSetTime(a0);"))
+
+  (define glfwMakeContextCurrent
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0))
+      "glfwMakeContextCurrent(a0);"))
+
+  (define glfwGetCurrentContext
+    (foreign-lambda*
+      (c-pointer (struct "GLFWwindow"))
+      ()
+      "return(glfwGetCurrentContext());"))
+
+  (define glfwSwapBuffers
+    (foreign-lambda*
+      void
+      (((c-pointer (struct "GLFWwindow")) a0))
+      "glfwSwapBuffers(a0);"))
+
+  (define glfwSwapInterval
+    (foreign-lambda* void ((integer a0)) "glfwSwapInterval(a0);"))
+
+  (define glfwExtensionSupported
+    (foreign-lambda*
+      integer
+      ((c-string a0))
+      "return(glfwExtensionSupported(a0));"))
+
+  (define glfwGetProcAddress
+    (foreign-lambda*
+      (function void (void))
+      ((c-string a0))
+      "return(glfwGetProcAddress(a0));")))

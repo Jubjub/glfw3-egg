@@ -1,0 +1,4 @@
+(compile -s -O3 -d0 -lglfw3 -lopengl32 -lgdi32 -J glfw3.scm)
+(install-extension 'glfw3
+  '("glfw3.so")
+  '((version "0.0.2")))
