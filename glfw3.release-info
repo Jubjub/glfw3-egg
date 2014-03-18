@@ -1,0 +1,3 @@
+(repo git "git://github.com/evhan/glfw3-egg.git")
+(uri targz "https://github.com/Metanoia/glfw3-egg/tarball/{egg-release}")
+(release "0.0.1")

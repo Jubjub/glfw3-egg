@@ -421,7 +421,7 @@
 
   (define glfwWindowShouldClose
     (foreign-lambda*
-      integer
+      bool
       (((c-pointer (struct "GLFWwindow")) a0))
       "return(glfwWindowShouldClose(a0));"))
 

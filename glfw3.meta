@@ -1,0 +1,5 @@
+((description "GLFW3 bindings")
+ (category graphics)
+ (author "Jubjub")
+ (license "MIT")
+ (foreign-depends "GLFW"))
