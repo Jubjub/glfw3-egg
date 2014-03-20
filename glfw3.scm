@@ -567,9 +567,9 @@
         a1))
       "return(glfwSetFramebufferSizeCallback(a0 , a1));"))
 
-  (define glfwPollEvents (foreign-lambda* void () "glfwPollEvents();"))
+  (define glfwPollEvents (foreign-safe-lambda* void () "glfwPollEvents();"))
 
-  (define glfwWaitEvents (foreign-lambda* void () "glfwWaitEvents();"))
+  (define glfwWaitEvents (foreign-safe-lambda* void () "glfwWaitEvents();"))
 
   (define glfwGetInputMode
     (foreign-lambda*
@@ -607,7 +607,14 @@
       (((c-pointer (struct "GLFWwindow")) a0) (double a1) (double a2))
       "glfwSetCursorPos(a0 , a1 , a2);"))
 
-  (define glfwSetKeyCallback
+  (define *internal-key-callback* #f)
+  (define-external (internal_key_callback_hook (c-pointer window) (integer key)
+                                               (integer scancode) (integer action)
+                                               (integer mods))
+                   void
+                   (*internal-key-callback* window key scancode action mods))
+
+  (define glfwSetKeyCallback*
     (foreign-lambda*
       (function
         void
@@ -622,6 +629,10 @@
            integer))
         a1))
       "return(glfwSetKeyCallback(a0 , a1));"))
+
+  (define (glfwSetKeyCallback window callback)
+    (set! *internal-key-callback* callback)
+    (glfwSetKeyCallback* window (location internal_key_callback_hook)))
 
   (define glfwSetCharCallback
     (foreign-lambda*
