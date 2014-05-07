@@ -664,13 +664,22 @@
     (set! *internal-mousebutton-callback* callback)
     (glfwSetMouseButtonCallback* window (location internal_mousebutton_callback_hook)))
 
-  (define glfwSetCursorPosCallback
+  (define *internal-cursorpos-callback* #f)
+  (define-external (internal_cursorpos_callback_hook (c-pointer window) (double x) (double y))
+                   void
+                   (*internal-cursorpos-callback* window x y))
+
+  (define glfwSetCursorPosCallback*
     (foreign-lambda*
       (function void ((c-pointer (struct "GLFWwindow")) double double))
       (((c-pointer (struct "GLFWwindow")) a0)
        ((function void ((c-pointer (struct "GLFWwindow")) double double))
         a1))
       "return(glfwSetCursorPosCallback(a0 , a1));"))
+
+  (define (glfwSetCursorPosCallback window callback)
+    (set! *internal-cursorpos-callback* callback)
+    (glfwSetCursorPosCallback* window (location internal_cursorpos_callback_hook)))
 
   (define glfwSetCursorEnterCallback
     (foreign-lambda*
