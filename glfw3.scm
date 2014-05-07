@@ -642,7 +642,13 @@
         a1))
       "return(glfwSetCharCallback(a0 , a1));"))
 
-  (define glfwSetMouseButtonCallback
+  (define *internal-mousebutton-callback* #f)
+  (define-external (internal_mousebutton_callback_hook (c-pointer window) (integer button)
+                                                       (integer action) (integer mods))
+                   void
+                   (*internal-mousebutton-callback* window button action mods))
+
+  (define glfwSetMouseButtonCallback*
     (foreign-lambda*
       (function
         void
@@ -653,6 +659,10 @@
           ((c-pointer (struct "GLFWwindow")) integer integer integer))
         a1))
       "return(glfwSetMouseButtonCallback(a0 , a1));"))
+
+  (define (glfwSetMouseButtonCallback window callback)
+    (set! *internal-mousebutton-callback* callback)
+    (glfwSetMouseButtonCallback* window (location internal_mousebutton_callback_hook)))
 
   (define glfwSetCursorPosCallback
     (foreign-lambda*
