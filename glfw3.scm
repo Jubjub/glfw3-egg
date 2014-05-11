@@ -1,4 +1,4 @@
-(foreign-declare "#include <glfw/glfw3.h>") 
+(foreign-declare "#include <GLFW/glfw3.h>") 
 
 (module glfw3 *
   (import chicken scheme foreign)
