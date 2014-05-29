@@ -634,13 +634,21 @@
     (set! *internal-key-callback* callback)
     (glfwSetKeyCallback* window (location internal_key_callback_hook)))
 
-  (define glfwSetCharCallback
+  (define *internal-char-callback* #f)
+  (define-external (internal_char_callback_hook (c-pointer window) (unsigned-integer char))
+                   void
+                   (*internal-char-callback* window char))
+  (define glfwSetCharCallback*
     (foreign-lambda*
       (function void ((c-pointer (struct "GLFWwindow")) unsigned-integer))
       (((c-pointer (struct "GLFWwindow")) a0)
        ((function void ((c-pointer (struct "GLFWwindow")) unsigned-integer))
         a1))
       "return(glfwSetCharCallback(a0 , a1));"))
+
+  (define (glfwSetCharCallback window callback)
+    (set! *internal-char-callback* callback)
+    (glfwSetCharCallback* window (location internal_char_callback_hook)))
 
   (define *internal-mousebutton-callback* #f)
   (define-external (internal_mousebutton_callback_hook (c-pointer window) (integer button)
